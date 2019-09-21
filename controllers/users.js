@@ -17,7 +17,7 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   try {
     const body = request.body
-    if (!body.password || !body.username){
+    if (typeof body.password === 'undefined' || typeof body.username === 'undefined'){
       return response.status(400).json({ error: 'body requires both a username and a password'})
     }
     if (body.password.length <= 3 || body.username.length <= 3){
