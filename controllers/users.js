@@ -3,17 +3,17 @@ const User = require('../models/user')
 
 const bcrypt = require('bcrypt')
 
-usersRouter.get('/', async (request, response) => {
+usersRouter.get('/', async (request, response, next) => {
   try {
     const users = await User.find({}).populate('blogs')
 
     response.json(users)
   } catch (e) {
-    console.log(e)
+    next(e)
   }
 })
 
-usersRouter.post('/', async (request, response) => {
+usersRouter.post('/', async (request, response, next) => {
   try {
     const body = request.body
     if (typeof body.password === 'undefined' || typeof body.username === 'undefined'){
@@ -27,7 +27,7 @@ usersRouter.post('/', async (request, response) => {
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
     const user = new User({
-      blogs: body.blogs.map(blog=>blog),
+      blogs: body.blogs,
       username: body.username,
       name: body.name,
       passwordHash,
@@ -37,7 +37,7 @@ usersRouter.post('/', async (request, response) => {
 
     response.json(savedUser)
   }catch (e) {
-    console.log(e)
+    next(e)
   }
 })
 
